@@ -12,6 +12,7 @@
 %  Matlab version was written by Sze Teng Liong and was tested on Matlab 2018b
 %  If you have any problem, please feel free to contact Sze Teng Liong (stliong@fcu.edu.tw)
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 % Read the 68 subject names
 fid = fopen('video442subName.txt'); 
 garbage = textscan(fid,'%s','delimiter','\n');
