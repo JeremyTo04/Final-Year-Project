@@ -12,6 +12,7 @@
 %  Matlab version was written by Sze Teng Liong and was tested on Matlab 2018b
 %  If you have any problem, please feel free to contact Sze Teng Liong (stliong@fcu.edu.tw)
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 % Read the 68 subject names
 fid = fopen('video442subName.txt'); 
 garbage = textscan(fid,'%s','delimiter','\n');
@@ -26,17 +27,22 @@ opts = trainingOptions('adam', 'InitialLearnRate', 0.00005, 'MaxEpochs', 500, 'M
 % LOSOCV train and test
 for nSub = 1:length(subName)
     % Read train images and labels
-    cd (['input\' , subName{nSub,:}]);
+    cd (['casme2\' , subName{nSub,:}]);
     trainingImages = imageDatastore('u_train', 'IncludeSubfolders', true, 'LabelSource', 'foldernames'); 
     % Train model
     myNet = trainNetwork(trainingImages, STSTNet,opts);
     cd ('..\..')
     
     % Read test images and labels
-    cd (['input\' , subName{nSub,:}])    
+    cd (['casme2\' , subName{nSub,:}])    
     testImages = imageDatastore('u_test', 'IncludeSubfolders', true, 'LabelSource', 'foldernames');
     desiredLabels =  testImages.Labels;
     % Test images using trained model
     predictedLabels = classify(myNet, testImages);
     cd ('..\..')
+
+    % Save predicted emotions to CSV file
+    resultsTable = table(testImages.Files, string(predictedLabels), 'VariableNames', {'ImageFile', 'PredictedEmotion'});
+    outputFilePath = fullfile('casme2', subName{nSub,:}, 'predicted_emotions.csv');
+    writetable(resultsTable, outputFilePath);
 end

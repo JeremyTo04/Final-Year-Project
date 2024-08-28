@@ -1,1 +1,8 @@
-006
+sub19
+sub20
+sub21
+sub22
+sub23
+sub24
+sub25
+sub26
