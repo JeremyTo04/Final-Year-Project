@@ -13,7 +13,7 @@ import torch.nn as nn
 import argparse, random
 from functools import partial
 
-from CA_block import resnet18_pos_attention,resnet50
+from CA_block import resnet18_pos_attention    # originaly imported resnet50 fron ca_block.py, but its not used anywhere so i deleted it, (changes made)
 
 from PC_module import VisionTransformer_POS
 
@@ -36,7 +36,7 @@ def parse_args():
     parser.add_argument('--lr', type=float, default=0.0001, help='Initial learning rate for sgd.')
     parser.add_argument('--momentum', default=0.9, type=float, help='Momentum for sgd')
     parser.add_argument('--workers', default=0, type=int, help='Number of data loading workers (default: 4)')
-    parser.add_argument('--epochs', type=int, default=7000, help='Total training epochs.')
+    parser.add_argument('--epochs', type=int, default=1, help='Total training epochs.')
     parser.add_argument('--drop_rate', type=float, default=0, help='Drop out rate.')
     return parser.parse_args()
 
@@ -288,7 +288,7 @@ class MMNet(nn.Module):
 
 
         self.conv_act = nn.Sequential(
-            nn.Conv2d(in_channels=3, out_channels=90*2, kernel_size=3, stride=2,padding=1, bias=False,groups=2),
+            nn.Conv2d(in_channels=3, out_channels=90*2, kernel_size=3, stride=2,padding=1, bias=False,groups=1), # groups variable originally set to 2, set to either 1 or 3 to make it run, (changes made)
             nn.BatchNorm2d(180),
             nn.ReLU(inplace=True),
             )
@@ -442,7 +442,7 @@ def run_training():
 
         net_all = net_all.cuda()
 
-        for i in range(1, 100):
+        for i in range(1, 2): #training epochs, originally set to 100, here set to 2 for illustration, (changes made)
             running_loss = 0.0
             correct_sum = 0
             running_loss_MASK = 0.0
@@ -599,6 +599,22 @@ def run_training():
         print("[..........%s] correctnum:%d . zongshu:%d   " % (subj, max_corr, val_dataset.__len__()))
         print("[ALL_corr]: %d [ALL_val]: %d" % (num_sum, val_now))
         print("[F1_now]: %.4f [F1_ALL]: %.4f" % (max_f1, F1_ALL))
+
+        # save emotion results to csv, (changes made)
+        # start
+        # if subj == LOSO[-1]:
+        print("Saving emotion results to csv...")
+        pos_label = pos_label.numpy()
+        pos_pred = pos_pred.numpy()
+        TP_ALL = TP_ALL.numpy()
+        df = pd.DataFrame({'pos_label': pos_label, 'pos_pred': pos_pred, 'TP': TP_ALL})
+        df.to_csv('emotion_results.csv', index=False)
+        print("Emotion results saved to emotion_results.csv.")
+        print("LOSO %s done." % subj)
+        # end
+        break
+
+
 
 
 
