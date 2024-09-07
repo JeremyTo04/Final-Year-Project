@@ -44,6 +44,54 @@ def add_emotion_label(csv_file_path):
     df.to_csv(csv_file_path, index=False)
     return df
 
+def add_action_unit_column(emotions_csv_path, action_units_xlsx_path, output_csv_path):
+    emotions_df = pd.read_csv(emotions_csv_path)
+    action_units_df = pd.read_excel(action_units_xlsx_path)
+    merged_df = pd.merge(emotions_df, action_units_df[['File name', 'Action Units']], on='File name', how='left')
+    merged_df.to_csv(output_csv_path, index=False)
+    print(f"New CSV file with 'Action unit' column created at: {output_csv_path}")
+    
+def assign_unique_ids(csv_path, output_csv_path):
+    df = pd.read_csv(csv_path)
+    df['Estimated Emotion ID'] = df['Estimated Emotion (7 class)'].astype('category').cat.codes + 1
+    df.to_csv(output_csv_path, index=False)
+    print(f"New CSV file with 'Estimated Emotion ID' column created at: {output_csv_path}")
+
+
+def match_emotions(predicted_emotions_path, new_casme_path, output_path):
+    # Read the CSV files into DataFrames
+    predicted_df = pd.read_csv(predicted_emotions_path)
+    new_casme_df = pd.read_csv(new_casme_path)
+
+    # Merge the DataFrames on 'Filename' column, allowing for duplicates
+    merged_df = pd.merge(new_casme_df, predicted_df[['Filename', 'Predicted Emotion']], on='Filename', how='left')
+    
+    # Drop rows where 'Predicted Emotion' is NaN
+    merged_df = merged_df.dropna(subset=['Predicted Emotion'])
+
+    # Save the merged DataFrame to a new CSV file
+    merged_df.to_csv(output_path, index=False)
+
+    return merged_df
+
+def replace_values(input_path, output_path):
+    df = pd.read_csv(input_path)
+    
+    if 'gender' in df.columns:
+        # Replace 'Female' with 0 and 'Male' with 1
+        df['gender'] = df['gender'].replace({'Female': 0, 'Male': 1})
+        df['gender'] = df['gender'].astype(int)
+    else:
+        print("The 'gender' column is not found in the CSV file.")
+    
+    df.to_csv(output_path, index=False)
+    
+    return df
+
+
+
 if __name__ == "__main__":
 
-    add_emotion_label(r"C:\Users\alyss\OneDrive\Documents\GitHub\Final-Year-Project\STSTNet-master\casme2\compiled_emotions.csv")
+    csv_path=r"C:\Users\alyss\Downloads\1new_CASME2-coding-20140508.csv"
+    output_csv_path=r"C:\Users\alyss\Downloads\1new_CASME2-coding-20140508.csv"
+    assign_unique_ids(csv_path, output_csv_path)
