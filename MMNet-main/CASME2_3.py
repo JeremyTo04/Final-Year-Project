@@ -389,9 +389,18 @@ def run_training():
 
 
     criterion = torch.nn.CrossEntropyLoss()
-    #leave one subject out protocal
-    LOSO = ['17', '26', '16', '9', '5', '24', '2', '13', '4', '23', '11', '12', '8', '14', '3', '19', '1', '10',
-            '20', '21', '22', '15', '6', '25', '7']
+
+    # added cpde to store the results in a CSV file (changes made)
+    if not os.path.exists('results_group_3.csv'):
+        results_df = pd.DataFrame(columns=['Subject', 'Correct', 'Total', 'F1', 'F1_ALL', 'Accuracy'])
+    else:
+        results_df = pd.read_csv('results_group_3.csv')
+
+    # #leave one subject out protocal
+    LOSO = ['17', '26', '16', '9', '5', '24', '2', '13', '4', '23', '11', '12', '8', '14', '3', '19', '1', '10', '20', '21', '22', '15', '6', '25', '7']  
+    # LOSO = ['17', '26', '16']# Testing on few subject (changes made)
+    # LOSO = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '19', '20', '21', '22', '23', '24', '25', '26'] # Testing on all subjects (changes made)
+    total_accuracy = 0 # total accuracy (changes made)
 
     val_now = 0
     num_sum = 0
@@ -422,10 +431,22 @@ def run_training():
         max_pos_pred = torch.zeros(3)
         max_pos_label = torch.zeros(3)
         max_TP = torch.zeros(3)
-        ##model initialization
+        # model initialization
         net_all = MMNet()
 
         params_all = net_all.parameters()
+
+        model_save_path = f'model_weights_subject_{subj}.pth'
+
+        # Check if the model weights file exists
+        if os.path.exists(model_save_path):
+            # Load the saved weights
+            net_all.load_state_dict(torch.load(model_save_path))
+            net_all.eval()  # Set the model to evaluation mode
+            print(f'Loaded saved model weights for subject {subj} from {model_save_path}')
+        else:
+            # Proceed with training since weights are not available
+            print(f'No saved model weights found for subject {subj}. Starting training.')
 
         if args.optimizer == 'adam':
             optimizer_all = torch.optim.AdamW(params_all, lr=0.0008, weight_decay=0.7)
@@ -442,7 +463,8 @@ def run_training():
 
         net_all = net_all.cuda()
 
-        for i in range(1, 2): #training epochs, originally set to 100, here set to 2 for illustration, (changes made)
+        for i in range(1, 100):
+        # for i in range(1, 2): #training epochs, originally set to 100, here set to 2 for illustration, (changes made)
             running_loss = 0.0
             correct_sum = 0
             running_loss_MASK = 0.0
@@ -583,6 +605,8 @@ def run_training():
                     max_pos_pred = pos_pred
                     max_TP = TP
                 print("[Epoch %d] Validation accuracy:%.4f. Loss:%.3f, F1-score:%.3f" % (i, acc, running_loss, AVG_F1))
+                torch.save(net_all.state_dict(), model_save_path)
+                print(f'Model weights saved for subject {subj} at {model_save_path}')
         num_sum = num_sum + max_corr
         pos_label_ALL = pos_label_ALL + max_pos_label
         pos_pred_ALL = pos_pred_ALL + max_pos_pred
@@ -599,28 +623,59 @@ def run_training():
         print("[..........%s] correctnum:%d . zongshu:%d   " % (subj, max_corr, val_dataset.__len__()))
         print("[ALL_corr]: %d [ALL_val]: %d" % (num_sum, val_now))
         print("[F1_now]: %.4f [F1_ALL]: %.4f" % (max_f1, F1_ALL))
+        
+        # changes made start
+        total_accuracy += acc
 
-        # save emotion results to csv, (changes made)
-        # start
-        # if subj == LOSO[-1]:
-        print("Saving emotion results to csv...")
-        pos_label = pos_label.numpy()
-        pos_pred = pos_pred.numpy()
-        TP_ALL = TP_ALL.numpy()
-        df = pd.DataFrame({'pos_label': pos_label, 'pos_pred': pos_pred, 'TP': TP_ALL})
-        df.to_csv('emotion_results.csv', index=False)
-        print("Emotion results saved to emotion_results.csv.")
-        print("LOSO %s done." % subj)
-        # end
-        break
+        # Create a DataFrame for the current subject's results
+        result_df = pd.DataFrame([{
+            'Subject': subj,
+            'Correct': max_corr,
+            'Total': val_dataset.__len__(),
+            'F1': max_f1,
+            'F1_ALL': F1_ALL,
+            'Accuracy': acc,
+            'all_val': val_now,
+            'all_corr': num_sum
+        }])
 
+        # Concatenate the result DataFrame with the main results DataFrame
+        results_df = pd.concat([results_df, result_df], ignore_index=True)
 
+        print('Subject: %s' % subj)
+        print('Correct: %d' % max_corr)
+        print('Total: %d' % val_dataset.__len__())
+        print('F1: %.4f' % max_f1)
+        print('F1_ALL: %.4f' % F1_ALL)
+        print('Accuracy: %.4f' % acc)
+        print('all_val: %d' % val_now)
+        print('all_corr: %d' % num_sum)
+        print('---------------------------------')
 
+    # Final accuracy calculation
+    final_accuracy = total_accuracy / len(LOSO)
 
+    # Create a DataFrame for the final accuracy
+    final_result_df = pd.DataFrame([{
+        'Subject': 'Final',
+        'Correct': '',
+        'Total': '',
+        'F1': '',
+        'F1_ALL': '',
+        'Accuracy': final_accuracy,
+        'all_val': '',
+        'all_corr': ''
+    }])
 
+    # Concatenate the final accuracy DataFrame with the main results DataFrame
+    results_df = pd.concat([results_df, final_result_df], ignore_index=True)
 
+    # Save the DataFrame to a CSV file
+    results_df.to_csv('results_group_3.csv', index=False)
 
+    print('Final Accuracy: %.4f' % final_accuracy)
 
+    # changes made end
 
 if __name__ == "__main__":
     run_training()
