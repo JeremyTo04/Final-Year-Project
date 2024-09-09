@@ -74,8 +74,8 @@ def create_args():
         cudnn_deterministic=False,           # setting this to true will slow the computation time but will have identic results when using the checkpoint backwards
 
         # path args
-        model_path='',                       # DDPM weights path
-        classifier_path='',                  # Classifier weights path
+        model_path='ACE-main\models\ddpm\ddpm-celeba.pt',                       # DDPM weights path
+        classifier_path='ACE-main\models\classifier\classifier.pth',                  # Classifier weights path
         output_path='results',               # Output path
         exp_name='exp',                      # Experiment name (will store the results at Output/Results/exp_name)
 
@@ -88,7 +88,7 @@ def create_args():
         attack_joint=True,                   # Set to false to generate adversarial attacks
         attack_joint_checkpoint=False,       # use checkpoint method for backward. Beware, this will substancially slow down the CE generation!
         attack_checkpoint_backward_steps=1,  # number of DDPM iterations per backward process. We highly recommend have a larger backward steps than batch size (e.g have 2 backward steps and batch size of 1 than 1 backward step and batch size 2)
-        attack_joint_shortcut=False,         # Use DiME shortcut to transfer gradients. We do not recommend it.
+        attack_joint_shortcut=u,         # Use DiME shortcut to transfer gradients. We do not recommend it.
 
         # dist args
         dist_l1=0.0,                         # l1 scaling factor
