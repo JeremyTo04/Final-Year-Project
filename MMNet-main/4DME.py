@@ -14,9 +14,9 @@ import time
 import argparse, random
 from functools import partial
 
-from torchvision.models import resnet50
+# from torchvision.models import resnet50
 
-from CA_block import resnet18_pos_attention,resnet50
+from CA_block import resnet18_pos_attention
 
 from PC_module import VisionTransformer_POS
 
