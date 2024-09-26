@@ -468,14 +468,17 @@ def run_training():
 
         net_all = net_all.cuda()
 
-        # Define the directory path and the full weight path
-        weight_dir = '/content/Final-Year-Project/MMNet-main/4dme/paths'
-        weight_path = os.path.join(weight_dir, 'model_weights.pth')
+        # Define the directory where you want to save the model
+        weight_dir = '/content/Final-Year-Project/MMNet-main/4dme'
 
-        # Check if the directory exists; if not, create it
+        # Ensure the directory exists
         if not os.path.exists(weight_dir):
             os.makedirs(weight_dir)
 
+        # Define the full path for saving the model
+        weight_path = os.path.join(weight_dir, 'model_weights.pth')
+
+        # Now you can save the model without the error
         torch.save(net_all.state_dict(), weight_path)
 
         for i in range(1, 100):
