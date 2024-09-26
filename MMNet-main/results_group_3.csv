@@ -1,0 +1,13 @@
+Subject,Correct,Total,F1,F1_ALL,Accuracy,all_val,all_corr
+22,tensor(2),2.0,tensor(1.),tensor(1.),1.0,2.0,tensor(2)
+15,tensor(3),3.0,tensor(1.),tensor(1.),0.666700005531311,5.0,tensor(5)
+6,tensor(3),4.0,tensor(0.556),tensor(0.852),0.75,9.0,tensor(8)
+25,tensor(5),5.0,tensor(1.),tensor(0.867),0.6000000238418579,14.0,tensor(13)
+7,tensor(5),5.0,tensor(1.),tensor(0.876),1.0,19.0,tensor(18)
+Final,,,,,0.8033400058746338,,
+17,tensor(31),33.0,tensor(0.932),tensor(0.932),0.7576000094413757,33.0,tensor(31)
+Final,,,,,0.7576000094413757,,
+Final,,,,,0.0,,
+Final,,,,,0.0,,
+17,tensor(26),33.0,tensor(0.376),tensor(0.376),0.7878999710083008,33.0,tensor(26)
+Final,,,,,0.7878999710083008,,
