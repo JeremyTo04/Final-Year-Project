@@ -182,32 +182,32 @@ class RafDataSet(data.Dataset):
         off2 = 'Frame_' + off2.zfill(9) + '.jpg'
         off3 = 'Frame_' + off3.zfill(9) + '.jpg'
 
-        path_on0 = os.path.join(self.raf_path, 'micro short gray video/micro short gray video/', sub, f, on0)
+        path_on0 = os.path.join(self.raf_path, 'micro short gray video/micro short gray video/micro short gray video', sub, f, on0)
         #print(f"path: {path_on0}")
         path_on0 = path_on0.replace('\\', '/')
         #print(f"path: {path_on0}")   # CHANGED
-        path_on1 = os.path.join(self.raf_path, 'micro short gray video/micro short gray video/', sub, f, on1)
+        path_on1 = os.path.join(self.raf_path, 'micro short gray video/micro short gray video/micro short gray video', sub, f, on1)
         path_on1 = path_on0.replace('\\', '/')
         
-        path_on2 = os.path.join(self.raf_path, 'micro short gray video/micro short gray video/', sub, f, on2)
+        path_on2 = os.path.join(self.raf_path, 'micro short gray video/micro short gray video/micro short gray video', sub, f, on2)
         path_on2 = path_on0.replace('\\', '/')
         
-        path_on3 = os.path.join(self.raf_path, 'micro short gray video/micro short gray video/', sub, f, on3)
+        path_on3 = os.path.join(self.raf_path, 'micro short gray video/micro short gray video/micro short gray video', sub, f, on3)
         path_on3 = path_on0.replace('\\', '/')
         
-        path_apex0 = os.path.join(self.raf_path, 'micro short gray video/micro short gray video/', sub, f, apex0)
+        path_apex0 = os.path.join(self.raf_path, 'micro short gray video/micro short gray video/micro short gray video', sub, f, apex0)
         path_apex0 = path_on0.replace('\\', '/')
         
-        path_off0 = os.path.join(self.raf_path, 'micro short gray video/micro short gray video/', sub, f, off0)
+        path_off0 = os.path.join(self.raf_path, 'micro short gray video/micro short gray video/micro short gray video', sub, f, off0)
         path_off0 = path_on0.replace('\\', '/')
         
-        path_off1 = os.path.join(self.raf_path, 'micro short gray video/micro short gray video/', sub, f, off1)
+        path_off1 = os.path.join(self.raf_path, 'micro short gray video/micro short gray video/micro short gray video', sub, f, off1)
         path_off1 = path_on0.replace('\\', '/')
         
-        path_off2 = os.path.join(self.raf_path, 'micro short gray video/micro short gray video/', sub, f, off2)
+        path_off2 = os.path.join(self.raf_path, 'micro short gray video/micro short gray video/micro short gray video', sub, f, off2)
         path_off2 = path_on0.replace('\\', '/')
         
-        path_off3 = os.path.join(self.raf_path, 'micro short gray video/micro short gray video/', sub, f, off3)
+        path_off3 = os.path.join(self.raf_path, 'micro short gray video/micro short gray video/micro short gray video', sub, f, off3)
         path_off3 = path_on0.replace('\\', '/')
         image_on0 = cv2.imread(path_on0)
         image_on1= cv2.imread(path_on1)
