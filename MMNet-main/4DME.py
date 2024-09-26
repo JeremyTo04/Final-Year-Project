@@ -355,7 +355,7 @@ def run_training():
     args = parse_args()
     imagenet_pretrained = True
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    weight_path = r"C:\Users\alyss\OneDrive\Documents\GitHub\Final-Year-Project\MMNet-main\4dme\paths"
+    weight_path = r"\content\Final-Year-Project\MMNet-main\4dme\paths"
     if not imagenet_pretrained:
         for m in res18.modules():
             initialize_weight_goog(m)
