@@ -467,6 +467,15 @@ def run_training():
         scheduler_all = torch.optim.lr_scheduler.ExponentialLR(optimizer_all, gamma=0.987)
 
         net_all = net_all.cuda()
+
+        # Define the directory path and the full weight path
+        weight_dir = '/content/Final-Year-Project/MMNet-main/4dme/paths'
+        weight_path = os.path.join(weight_dir, 'model_weights.pth')
+
+        # Check if the directory exists; if not, create it
+        if not os.path.exists(weight_dir):
+            os.makedirs(weight_dir)
+
         torch.save(net_all.state_dict(), weight_path)
 
         for i in range(1, 100):
