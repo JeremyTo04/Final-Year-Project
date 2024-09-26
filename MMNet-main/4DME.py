@@ -355,7 +355,7 @@ def run_training():
     args = parse_args()
     imagenet_pretrained = True
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    weight_path = 'datasets/4DME/train_all.pth'
+    weight_path = '4dme/train_all.pth'
     if not imagenet_pretrained:
         for m in res18.modules():
             initialize_weight_goog(m)
