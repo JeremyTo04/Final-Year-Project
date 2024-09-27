@@ -172,15 +172,15 @@ class RafDataSet(data.Dataset):
             f = str(self.file_names[idx])
 
 
-        on0 = 'Frame_' + on0.zfill(9) + '.jpg'
-        on1 = 'Frame_' + on1.zfill(9) + '.jpg'
-        on2 = 'Frame_' + on2.zfill(9) + '.jpg'
-        on3 = 'Frame_' + on3.zfill(9) + '.jpg'
-        apex0 = 'Frame_' + apex0.zfill(9) + '.jpg'
-        off0 = 'Frame_' + off0.zfill(9) + '.jpg'
-        off1 = 'Frame_' + off1.zfill(9) + '.jpg'
-        off2 = 'Frame_' + off2.zfill(9) + '.jpg'
-        off3 = 'Frame_' + off3.zfill(9) + '.jpg'
+        on0 = 'frame_' + on0.zfill(9) + '.jpg'
+        on1 = 'frame_' + on1.zfill(9) + '.jpg'
+        on2 = 'frame_' + on2.zfill(9) + '.jpg'
+        on3 = 'frame_' + on3.zfill(9) + '.jpg'
+        apex0 = 'frame_' + apex0.zfill(9) + '.jpg'
+        off0 = 'frame_' + off0.zfill(9) + '.jpg'
+        off1 = 'frame_' + off1.zfill(9) + '.jpg'
+        off2 = 'frame_' + off2.zfill(9) + '.jpg'
+        off3 = 'frame_' + off3.zfill(9) + '.jpg'
 
         path_on0 = os.path.join(self.raf_path, 'micro_short_gray_video/micro short gray video/micro short gray video', sub, f, on0)
         #print(f"path: {path_on0}")
