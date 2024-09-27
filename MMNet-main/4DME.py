@@ -664,9 +664,8 @@ def fix_filename_case(directory):
 
 
 if __name__ == "__main__":
-    # run_training()
-    directory = r"C:\Users\alyss\OneDrive\Documents\GitHub\Final-Year-Project\MMNet-main\4dme\micro_short_gray_video"
-    
-    fix_filename_case(directory)
+    run_training()
+    # directory = r"C:\Users\alyss\OneDrive\Documents\GitHub\Final-Year-Project\MMNet-main\4dme\micro_short_gray_video"
+    # fix_filename_case(directory)
 
     
