@@ -643,8 +643,30 @@ def run_training():
         file_name = f'predictions_and_labels_{subj}.xlsx'
         print(f"saving predictions for {subj} to {file_name}")
         df.to_excel(file_name, index=False)
+        
+import os
+
+def fix_filename_case(directory):
+    for root, dirs, files in os.walk(directory):
+        for file in files:
+                # Check if the filename starts with "Frame_" or "frame_"
+                if file.startswith("Frame_"):
+                    old_file_path = os.path.join(root, file)
+                    # Rename to lowercase "frame_"
+                    new_file_name = file.replace("Frame_", "frame_")
+                    new_file_path = os.path.join(root, new_file_name)
+                    
+                    # Rename the file
+                    os.rename(old_file_path, new_file_path)
+                    print(f"Renamed: {old_file_path} -> {new_file_path}")
+
+
+
 
 if __name__ == "__main__":
-    run_training()
+    # run_training()
+    directory = r"C:\Users\alyss\OneDrive\Documents\GitHub\Final-Year-Project\MMNet-main\4dme\micro_short_gray_video"
+    
+    fix_filename_case(directory)
 
     
