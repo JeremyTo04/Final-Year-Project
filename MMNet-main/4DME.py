@@ -173,14 +173,15 @@ class RafDataSet(data.Dataset):
 
 
         on0 = ('frame_' if 'Frame_' not in on0 else 'Frame_') + on0.zfill(9) + '.jpg'
-        on1 = ('frame_' if 'Frame_' not in on0 else 'Frame_') + on1.zfill(9) + '.jpg'
-        on2 = ('frame_' if 'Frame_' not in on0 else 'Frame_') + on2.zfill(9) + '.jpg'
-        on3 = ('frame_' if 'Frame_' not in on0 else 'Frame_') + on3.zfill(9) + '.jpg'
-        apex0 = ('frame_' if 'Frame_' not in on0 else 'Frame_') + apex0.zfill(9) + '.jpg'
-        off0 = ('frame_' if 'Frame_' not in on0 else 'Frame_') + off0.zfill(9) + '.jpg'
-        off1 = ('frame_' if 'Frame_' not in on0 else 'Frame_') + off1.zfill(9) + '.jpg'
-        off2 = ('frame_' if 'Frame_' not in on0 else 'Frame_') + off2.zfill(9) + '.jpg'
-        off3 = ('frame_' if 'Frame_' not in on0 else 'Frame_') + off3.zfill(9) + '.jpg'
+        on1 = ('frame_' if 'Frame_' not in on1 else 'Frame_') + on1.zfill(9) + '.jpg'
+        on2 = ('frame_' if 'Frame_' not in on2 else 'Frame_') + on2.zfill(9) + '.jpg'
+        on3 = ('frame_' if 'Frame_' not in on3 else 'Frame_') + on3.zfill(9) + '.jpg'
+        apex0 = ('frame_' if 'Frame_' not in apex0 else 'Frame_') + apex0.zfill(9) + '.jpg'
+        off0 = ('frame_' if 'Frame_' not in off0 else 'Frame_') + off0.zfill(9) + '.jpg'
+        off1 = ('frame_' if 'Frame_' not in off1 else 'Frame_') + off1.zfill(9) + '.jpg'
+        off2 = ('frame_' if 'Frame_' not in off2 else 'Frame_') + off2.zfill(9) + '.jpg'
+        off3 = ('frame_' if 'Frame_' not in off3 else 'Frame_') + off3.zfill(9) + '.jpg'
+
 
         path_on0 = os.path.join(self.raf_path, 'micro_short_gray_video/micro short gray video/micro short gray video', sub, f, on0)
         #print(f"path: {path_on0}")
