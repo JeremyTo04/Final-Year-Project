@@ -172,15 +172,15 @@ class RafDataSet(data.Dataset):
             f = str(self.file_names[idx])
 
 
-        on0 = ('frame_' if 'Frame_' not in on0 else 'Frame_') + on0.zfill(9) + '.jpg'
-        on1 = ('frame_' if 'Frame_' not in on1 else 'Frame_') + on1.zfill(9) + '.jpg'
-        on2 = ('frame_' if 'Frame_' not in on2 else 'Frame_') + on2.zfill(9) + '.jpg'
-        on3 = ('frame_' if 'Frame_' not in on3 else 'Frame_') + on3.zfill(9) + '.jpg'
-        apex0 = ('frame_' if 'Frame_' not in apex0 else 'Frame_') + apex0.zfill(9) + '.jpg'
-        off0 = ('frame_' if 'Frame_' not in off0 else 'Frame_') + off0.zfill(9) + '.jpg'
-        off1 = ('frame_' if 'Frame_' not in off1 else 'Frame_') + off1.zfill(9) + '.jpg'
-        off2 = ('frame_' if 'Frame_' not in off2 else 'Frame_') + off2.zfill(9) + '.jpg'
-        off3 = ('frame_' if 'Frame_' not in off3 else 'Frame_') + off3.zfill(9) + '.jpg'
+        on0 = 'Frame_' + on0.zfill(9) + '.jpg'
+        on1 = 'Frame_' + on1.zfill(9) + '.jpg'
+        on2 = 'Frame_' + on2.zfill(9) + '.jpg'
+        on3 = 'Frame_' + on3.zfill(9) + '.jpg'
+        apex0 = 'Frame_' + apex0.zfill(9) + '.jpg'
+        off0 = 'Frame_' + off0.zfill(9) + '.jpg'
+        off1 = 'Frame_' + off1.zfill(9) + '.jpg'
+        off2 = 'Frame_' + off2.zfill(9) + '.jpg'
+        off3 = 'Frame_' + off3.zfill(9) + '.jpg'
 
 
         path_on0 = os.path.join(self.raf_path, 'micro_short_gray_video/micro short gray video/micro short gray video', sub, f, on0)
@@ -647,26 +647,33 @@ def run_training():
         
 import os
 
-def fix_filename_case(directory):
-    # Walk through all directories and subdirectories
-    for root, dirs, files in os.walk(directory):
+import os
+def rename_images_in_subfolders(base_path):
+    # Traverse through the directory structure
+    for root, dirs, files in os.walk(base_path):
         for file in files:
-            # Check if the filename contains 'Frame_'
-            if "Frame_" in file:
+            # Print the current file being checked
+            print(f'Checking file: {file}')
+            # Check if the file starts with 'frame_' (case-sensitive)
+            if file.startswith('frame_'):
+                # Construct the old file path
                 old_file_path = os.path.join(root, file)
-                # Rename 'Frame_' to 'frame_'
-                new_file_name = file.replace("Frame_", "frame_")
+                # Construct the new file name and path
+                new_file_name = file.replace('frame_', 'Frame_', 1)
                 new_file_path = os.path.join(root, new_file_name)
                 
                 # Rename the file
                 os.rename(old_file_path, new_file_path)
-                print(f"Renamed: {old_file_path} -> {new_file_path}")
+                print(f'Renamed: {old_file_path} to {new_file_path}')
+            else:
+                print(f'Not renamed: {file}')
+
 
 
 
 
 if __name__ == "__main__":
-    run_training()
-    # directory = r"C:\Users\alyss\OneDrive\Documents\GitHub\Final-Year-Project\MMNet-main\4dme\micro_short_gray_video\micro short gray video\micro short gray video"
-    # fix_filename_case(directory)
-    
+    # run_training()
+    base_path = r'C:\Users\alyss\OneDrive\Documents\GitHub\Final-Year-Project\MMNet-main\4dme\micro_short_gray_video\micro short gray video\micro short gray video'
+    rename_images_in_subfolders(base_path)
+        
