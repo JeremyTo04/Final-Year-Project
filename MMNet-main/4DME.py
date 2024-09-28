@@ -639,11 +639,22 @@ def run_training():
         print("[ALL_corr]: %d [ALL_val]: %d" % (num_sum, val_now))
         print("[F1_now]: %.4f [F1_ALL]: %.4f" % (max_f1, F1_ALL))
 
+        # df = pd.DataFrame(all_data, columns=['filename', 'Predicted Label', 'Actual Label'])
+        # # Save the DataFrame to an Excel file
+        # file_name = f'predictions_and_labels_{subj}.xlsx'
+        # print(f"saving predictions for {subj} to {file_name}")
+        # df.to_excel(file_name, index=False)
+        
         df = pd.DataFrame(all_data, columns=['filename', 'Predicted Label', 'Actual Label'])
         # Save the DataFrame to an Excel file
         file_name = f'predictions_and_labels_{subj}.xlsx'
         print(f"saving predictions for {subj} to {file_name}")
+        results_dir = r"C:\Users\alyss\OneDrive\Documents\GitHub\Final-Year-Project\MMNet-main\4dme\micro_short_gray_video\micro short gray video\micro short gray video\results"
+        if not os.path.exists(results_dir):
+            os.makedirs(results_dir)
+        file_name = os.path.join(results_dir, f'predictions_and_labels_{subj}.xlsx')
         df.to_excel(file_name, index=False)
+
         
 import os
 
