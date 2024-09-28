@@ -39,7 +39,7 @@ def parse_args():
     parser.add_argument('--lr', type=float, default=0.0001, help='Initial learning rate for sgd.')
     parser.add_argument('--momentum', default=0.9, type=float, help='Momentum for sgd')
     parser.add_argument('--workers', default=0, type=int, help='Number of data loading workers (default: 4)')
-    parser.add_argument('--epochs', type=int, default=1, help='Total training epochs.')
+    parser.add_argument('--epochs', type=int, default=20, help='Total training epochs.')
     parser.add_argument('--drop_rate', type=float, default=0, help='Drop out rate.')
     return parser.parse_args()
 
@@ -482,7 +482,7 @@ def run_training():
         # Now you can save the model without the error
         torch.save(net_all.state_dict(), weight_path)
 
-        for i in range(1, 100):
+        for i in range(1, 20): # changed number of epochs to 20 instead of 100
             running_loss = 0.0
             correct_sum = 0
             running_loss_MASK = 0.0
