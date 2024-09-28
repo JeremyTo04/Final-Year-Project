@@ -482,7 +482,7 @@ def run_training():
         # Now you can save the model without the error
         torch.save(net_all.state_dict(), weight_path)
 
-        for i in range(1, 20): # changed number of epochs to 20 instead of 100
+        for i in range(1, 3): # changed number of epochs to 3 instead of 100
             running_loss = 0.0
             correct_sum = 0
             running_loss_MASK = 0.0
@@ -649,11 +649,16 @@ def run_training():
         # Save the DataFrame to an Excel file
         file_name = f'predictions_and_labels_{subj}.xlsx'
         print(f"saving predictions for {subj} to {file_name}")
-        results_dir = r"C:\Users\alyss\OneDrive\Documents\GitHub\Final-Year-Project\MMNet-main\4dme\micro_short_gray_video\micro short gray video\micro short gray video\results"
+        results_dir = r"/content/Final-Year-Project/MMNet-main/4dme/micro_short_gray_video/micro short gray video/micro short gray video"
         if not os.path.exists(results_dir):
             os.makedirs(results_dir)
         file_name = os.path.join(results_dir, f'predictions_and_labels_{subj}.xlsx')
         df.to_excel(file_name, index=False)
+        # Check if the file has been saved successfully
+        if os.path.exists(file_name):
+            print(f"File saved successfully: {file_name}")
+        else:
+            print("Failed to save the file.")
 
         
 import os
