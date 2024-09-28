@@ -482,7 +482,7 @@ def run_training():
         # Now you can save the model without the error
         torch.save(net_all.state_dict(), weight_path)
 
-        for i in range(1, 3): # changed number of epochs to 3 instead of 100
+        for i in range(1, 20): # changed number of epochs to 20 instead of 100
             running_loss = 0.0
             correct_sum = 0
             running_loss_MASK = 0.0
