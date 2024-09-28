@@ -39,7 +39,7 @@ def parse_args():
     parser.add_argument('--lr', type=float, default=0.0001, help='Initial learning rate for sgd.')
     parser.add_argument('--momentum', default=0.9, type=float, help='Momentum for sgd')
     parser.add_argument('--workers', default=0, type=int, help='Number of data loading workers (default: 4)')
-    parser.add_argument('--epochs', type=int, default=7000, help='Total training epochs.')
+    parser.add_argument('--epochs', type=int, default=20, help='Total training epochs.')
     parser.add_argument('--drop_rate', type=float, default=0, help='Drop out rate.')
     return parser.parse_args()
 
