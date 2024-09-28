@@ -673,7 +673,7 @@ def rename_images_in_subfolders(base_path):
 
 
 if __name__ == "__main__":
-    # run_training()
-    base_path = r'C:\Users\alyss\OneDrive\Documents\GitHub\Final-Year-Project\MMNet-main\4dme\micro_short_gray_video\micro short gray video\micro short gray video'
-    rename_images_in_subfolders(base_path)
+    run_training()
+    # base_path = r'C:\Users\alyss\OneDrive\Documents\GitHub\Final-Year-Project\MMNet-main\4dme\micro_short_gray_video\micro short gray video\micro short gray video'
+    # rename_images_in_subfolders(base_path)
         
