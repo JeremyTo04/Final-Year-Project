@@ -134,6 +134,8 @@ class RafDataSet(data.Dataset):
             onset = self.file_paths_on[idx]
             apex = self.file_paths_apex[idx]
             offset =self.file_paths_off[idx]
+
+            print("onset", onset)
             # on0 = str(random.randint(int(onset), int(onset + int(0.2* (apex - onset) / 4))))
             on0 = str(int(onset))
             on1 = str(
@@ -213,6 +215,19 @@ class RafDataSet(data.Dataset):
         image_off3 = image_off3[:, :, ::-1]
         image_apex0 = image_apex0[:, :, ::-1]
 
+
+    #     image_paths = {
+    #     'on0': os.path.join(self.raf_path, 'Cropped-updated/Cropped/', sub, f, f'reg_img{on0}.jpg'),
+    #     'on1': os.path.join(self.raf_path, 'Cropped-updated/Cropped/', sub, f, f'reg_img{on1}.jpg'),
+    #     'on2': os.path.join(self.raf_path, 'Cropped-updated/Cropped/', sub, f, f'reg_img{on2}.jpg'),
+    #     'on3': os.path.join(self.raf_path, 'Cropped-updated/Cropped/', sub, f, f'reg_img{on3}.jpg'),
+    #     'apex0': os.path.join(self.raf_path, 'Cropped-updated/Cropped/', sub, f, f'reg_img{apex0}.jpg'),
+    #     'off0': os.path.join(self.raf_path, 'Cropped-updated/Cropped/', sub, f, f'reg_img{off0}.jpg'),
+    #     'off1': os.path.join(self.raf_path, 'Cropped-updated/Cropped/', sub, f, f'reg_img{off1}.jpg'),
+    #     'off2': os.path.join(self.raf_path, 'Cropped-updated/Cropped/', sub, f, f'reg_img{off2}.jpg'),
+    #     'off3': os.path.join(self.raf_path, 'Cropped-updated/Cropped/', sub, f, f'reg_img{off3}.jpg'),
+    # }
+
         label_all = self.label_all[idx]
         label_au = self.label_au[idx]
 
@@ -248,7 +263,41 @@ class RafDataSet(data.Dataset):
             for i in label_au:
                 temp[int(i) - 1] = 1
 
-            return image_on0, image_on1, image_on2, image_on3, image_apex0, image_off0, image_off1, image_off2, image_off3, label_all, temp
+            return image_on0, image_on1, image_on2, image_on3, image_apex0, image_off0, image_off1, image_off2, image_off3, label_all, f, temp
+
+        # # normalization for testing and training
+        # if self.transform is not None:
+        #     image_on0 = self.transform(image_on0)
+        #     image_on1 = self.transform(image_on1)
+        #     image_on2 = self.transform(image_on2)
+        #     image_on3 = self.transform(image_on3)
+        #     image_off0 = self.transform(image_off0)
+        #     image_off1 = self.transform(image_off1)
+        #     image_off2 = self.transform(image_off2)
+        #     image_off3 = self.transform(image_off3)
+        #     image_apex0 = self.transform(image_apex0)
+        #     ALL = torch.cat(
+        #         (image_on0, image_on1, image_on2, image_on3, image_apex0, image_off0, image_off1, image_off2,
+        #          image_off3), dim=0)
+        #     ## data augmentation for training only
+        #     if self.transform_norm is not None and self.phase == 'train':
+        #         ALL = self.transform_norm(ALL)
+        #     image_on0 = ALL[0:3, :, :]
+        #     image_on1 = ALL[3:6, :, :]
+        #     image_on2 = ALL[6:9, :, :]
+        #     image_on3 = ALL[9:12, :, :]
+        #     image_apex0 = ALL[12:15, :, :]
+        #     image_off0 = ALL[15:18, :, :]
+        #     image_off1 = ALL[18:21, :, :]
+        #     image_off2 = ALL[21:24, :, :]
+        #     image_off3 = ALL[24:27, :, :]
+
+
+        #     temp = torch.zeros(38)
+        #     for i in label_au:
+        #         temp[int(i) - 1] = 1
+
+        #     return image_on0, image_on1, image_on2, image_on3, image_apex0, image_off0, image_off1, image_off2, image_off3, label_all, temp
 
 
 def initialize_weight_goog(m, n=''):
@@ -313,7 +362,8 @@ class MMNet(nn.Module):
         self.timeembed = nn.Parameter(torch.zeros(1, 4, 111, 111))
 
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
-    def forward(self, x1, x2, x3, x4, x5, x6, x7, x8, x9, if_shuffle):
+    # def forward(self, x1, x2, x3, x4, x5, x6, x7, x8, x9, if_shuffle):
+    def forward(self, x1, x5, if_shuffle):
         ##onset:x1 apex:x5
         B = x1.shape[0]
 
@@ -390,16 +440,15 @@ def run_training(evaluate_only=False):
 
     criterion = torch.nn.CrossEntropyLoss()
 
-    # added cpde to store the results in a CSV file (changes made)
+    # added to store the results in a CSV file (changes made)
     if not os.path.exists('results_group_3.csv'):
         results_df = pd.DataFrame(columns=['Subject', 'Correct', 'Total', 'F1', 'F1_ALL', 'Accuracy'])
     else:
         results_df = pd.read_csv('results_group_3.csv')
 
     # #leave one subject out protocal  
-    # LOSO = ['22', '15', '6', '25', '7']   
-    LOSO = ['17']# Testing on few subject (changes made)
-    # LOSO = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '19', '20', '21', '22', '23', '24', '25', '26'] # Testing on all subjects (changes made)
+    # LOSO = ['17']# Testing on few subject (changes made)
+    LOSO = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '19', '20', '21', '22', '23', '24', '25', '26'] # Testing on all subjects (changes made)
         
     # LOSO = ['17', '26', '16', '9', '5', '24', '2', '13', '4', '23', '11', '12', '8', '14', '3', '19', '1', '10', '20', '21', '22', '15', '6', '25', '7']
     total_accuracy = 0 # total accuracy (changes made)
@@ -409,6 +458,12 @@ def run_training(evaluate_only=False):
     pos_pred_ALL = torch.zeros(3)
     pos_label_ALL = torch.zeros(3)
     TP_ALL = torch.zeros(3)
+
+    # creates a csv file called predicted_emotion or reads the existing one
+    if not os.path.exists('predicted_emotion.csv'):
+        predicted_emotion = pd.DataFrame(columns=['subject', 'Image', 'Predicted', 'Actual'])
+    else:
+        predicted_emotion = pd.read_csv('predicted_emotion.csv')
 
     for subj in LOSO:
         train_dataset = RafDataSet(args.raf_path, phase='train', num_loso=subj, transform=data_transforms,
@@ -487,7 +542,9 @@ def run_training(evaluate_only=False):
 
                 for batch_i, (
                     image_on0, image_on1, image_on2, image_on3, image_apex0, image_off0, image_off1, image_off2,
-                    image_off3, label_all, label_au) in enumerate(val_loader):
+                    image_off3, label_all, f, label_au) in enumerate(val_loader):
+
+                    # print("Hello", image_on0)
 
                     image_on0 = image_on0.cuda()
                     image_on1 = image_on1.cuda()
@@ -501,13 +558,24 @@ def run_training(evaluate_only=False):
                     label_all = label_all.cuda()
                     label_au = label_au.cuda()
 
-                    ALL = net_all(image_on0, image_on1, image_on2, image_on3, image_apex0, image_off0, image_off1, image_off2, image_off3, False)
+                    # ALL = net_all(image_on0, image_on1, image_on2, image_on3, image_apex0, image_off0, image_off1, image_off2, image_off3, False)
+                    ALL = net_all(image_on0, image_apex0, False)
                     loss = criterion(ALL, label_all)
                     running_loss += loss
                     iter_cnt += 1
 
                     _, predicts = torch.max(ALL, 1)
                     correct_num = torch.eq(predicts, label_all).sum()
+                    # image_keys = ['on0', 'on1', 'on2', 'on3', 'apex0', 'off0', 'off1', 'off2', 'off3']
+
+                    # Print predictions along with corresponding image paths
+                    for j in range(predicts.size(0)):  # Loop over the batch
+                        # all_data.append([f[j], predicts[j].item(), label_all[j].item()])
+                        print([f[j], predicts[j].item(), label_all[j].item()])
+
+                        # Append the predictions to the dataframe
+                        predicted_emotion = predicted_emotion._append({'subject': subj, 'Image': f[j], 'Predicted': predicts[j].item(), 'Actual': label_all[j].item()}, ignore_index=True)
+
                     bingo_cnt += correct_num.cpu()
                     sample_cnt += ALL.size(0)
 
@@ -534,6 +602,8 @@ def run_training(evaluate_only=False):
                 print(f'Model weights saved for subject {subj} at {model_save_path}')
                 print(f"label_all: {pos_label}, label_pred: {pos_pred}, TP: {TP}")
 
+
+
         else:
             # for i in range(1, 100):
             for i in range(1, 2): #training epochs, originally set to 100, here set to 2 for illustration, (changes made)
@@ -553,7 +623,7 @@ def run_training(evaluate_only=False):
                     batch_sz = image_on0.size(0)
                     b, c, h, w = image_on0.shape
                     iter_cnt += 1
-
+    
                     image_on0 = image_on0.cuda()
                     image_on1 = image_on1.cuda()
                     image_on2 = image_on2.cuda()
@@ -641,6 +711,7 @@ def run_training(evaluate_only=False):
                         iter_cnt += 1
                         _, predicts = torch.max(ALL, 1)
                         correct_num = torch.eq(predicts, label_all)
+                        print(f"predicts: {predicts}, Label_all: {label_all}") # changes made
                         bingo_cnt += correct_num.sum().cpu()
                         sample_cnt += ALL.size(0)
 
@@ -679,81 +750,85 @@ def run_training(evaluate_only=False):
                     print("[Epoch %d] Validation accuracy:%.4f. Loss:%.3f, F1-score:%.3f" % (i, acc, running_loss, AVG_F1))
                     torch.save(net_all.state_dict(), model_save_path)
                     print(f'Model weights saved for subject {subj} at {model_save_path}')
-            num_sum = num_sum + max_corr
-            pos_label_ALL = pos_label_ALL + max_pos_label
-            pos_pred_ALL = pos_pred_ALL + max_pos_pred
-            TP_ALL = TP_ALL + max_TP
-            count = 0
-            SUM_F1 = 0
-            for index in range(3):
-                if pos_label_ALL[index] != 0 or pos_pred_ALL[index] != 0:
-                    count = count + 1
-                    SUM_F1 = SUM_F1 + 2 * TP_ALL[index] / (pos_pred_ALL[index] + pos_label_ALL[index])
+                num_sum = num_sum + max_corr
+                pos_label_ALL = pos_label_ALL + max_pos_label
+                pos_pred_ALL = pos_pred_ALL + max_pos_pred
+                TP_ALL = TP_ALL + max_TP
+                count = 0
+                SUM_F1 = 0
+                for index in range(3):
+                    if pos_label_ALL[index] != 0 or pos_pred_ALL[index] != 0:
+                        count = count + 1
+                        SUM_F1 = SUM_F1 + 2 * TP_ALL[index] / (pos_pred_ALL[index] + pos_label_ALL[index])
 
-            F1_ALL = SUM_F1 / count
-            val_now = val_now + val_dataset.__len__()
-            print("[..........%s] correctnum:%d . zongshu:%d   " % (subj, max_corr, val_dataset.__len__()))
-            print("[ALL_corr]: %d [ALL_val]: %d" % (num_sum, val_now))
-            print("[F1_now]: %.4f [F1_ALL]: %.4f" % (max_f1, F1_ALL))
-            
-            # changes made start
-            total_accuracy += acc
+                F1_ALL = SUM_F1 / count
+                val_now = val_now + val_dataset.__len__()
+                print("[..........%s] correctnum:%d . zongshu:%d   " % (subj, max_corr, val_dataset.__len__()))
+                print("[ALL_corr]: %d [ALL_val]: %d" % (num_sum, val_now))
+                print("[F1_now]: %.4f [F1_ALL]: %.4f" % (max_f1, F1_ALL))
+                print(f"label_all: {pos_label_ALL}, label_pred: {pos_pred_ALL}, TP: {TP_ALL}")
+                
+                # changes made start
+                total_accuracy += acc
 
-            # Create a DataFrame for the current subject's results
-            result_df = pd.DataFrame([{
-                'Subject': subj,
-                'Correct': max_corr,
-                'Total': val_dataset.__len__(),
-                'F1': max_f1,
-                'F1_ALL': F1_ALL,
-                'Accuracy': acc,
-                'all_val': val_now,
-                'all_corr': num_sum
+                # Create a DataFrame for the current subject's results
+                result_df = pd.DataFrame([{
+                    'Subject': subj,
+                    'Correct': max_corr,
+                    'Total': val_dataset.__len__(),
+                    'F1': max_f1,
+                    'F1_ALL': F1_ALL,
+                    'Accuracy': acc,
+                    'all_val': val_now,
+                    'all_corr': num_sum
+                }])
+
+                # Concatenate the result DataFrame with the main results DataFrame
+                results_df = pd.concat([results_df, result_df], ignore_index=True)
+
+                print('Subject: %s' % subj)
+                print('Correct: %d' % max_corr)
+                print('Total: %d' % val_dataset.__len__())
+                print('F1: %.4f' % max_f1)
+                print('F1_ALL: %.4f' % F1_ALL)
+                print('Accuracy: %.4f' % acc)
+                print('all_val: %d' % val_now)
+                print('all_corr: %d' % num_sum)
+                print('---------------------------------')
+
+            # Final accuracy calculation
+            final_accuracy = total_accuracy / len(LOSO)
+
+            # Create a DataFrame for the final accuracy
+            final_result_df = pd.DataFrame([{
+                'Subject': 'Final',
+                'Correct': '',
+                'Total': '',
+                'F1': '',
+                'F1_ALL': '',
+                'Accuracy': final_accuracy,
+                'all_val': '',
+                'all_corr': ''
             }])
 
-            # Concatenate the result DataFrame with the main results DataFrame
-            results_df = pd.concat([results_df, result_df], ignore_index=True)
+            # Concatenate the final accuracy DataFrame with the main results DataFrame
+            results_df = pd.concat([results_df, final_result_df], ignore_index=True)
 
-            print('Subject: %s' % subj)
-            print('Correct: %d' % max_corr)
-            print('Total: %d' % val_dataset.__len__())
-            print('F1: %.4f' % max_f1)
-            print('F1_ALL: %.4f' % F1_ALL)
-            print('Accuracy: %.4f' % acc)
-            print('all_val: %d' % val_now)
-            print('all_corr: %d' % num_sum)
-            print('---------------------------------')
+            # Save the DataFrame to a CSV file
+            results_df.to_csv('results_group_3.csv', index=False)
 
-        # Final accuracy calculation
-        final_accuracy = total_accuracy / len(LOSO)
+            print('Final Accuracy: %.4f' % final_accuracy)
 
-        # Create a DataFrame for the final accuracy
-        final_result_df = pd.DataFrame([{
-            'Subject': 'Final',
-            'Correct': '',
-            'Total': '',
-            'F1': '',
-            'F1_ALL': '',
-            'Accuracy': final_accuracy,
-            'all_val': '',
-            'all_corr': ''
-        }])
+            # After finishing training on all subjects
+            torch.save(net_all.state_dict(), "final_model.pth")
+            print(f'Model weights saved for all subjects at final_model.pth')
 
-        # Concatenate the final accuracy DataFrame with the main results DataFrame
-        results_df = pd.concat([results_df, final_result_df], ignore_index=True)
+    # Save the predicted emotions to a CSV file
+    predicted_emotion.to_csv('predicted_emotion.csv', index=False)
 
-        # Save the DataFrame to a CSV file
-        results_df.to_csv('results_group_3.csv', index=False)
-
-        print('Final Accuracy: %.4f' % final_accuracy)
-
-        # After finishing training on all subjects
-        torch.save(net_all.state_dict(), "final_model.pth")
-        print(f'Model weights saved for all subjects at final_model.pth')
-
-        # changes made end
+            # changes made end
 
 
 if __name__ == "__main__":
-    run_training()
+    run_training(True)
     
