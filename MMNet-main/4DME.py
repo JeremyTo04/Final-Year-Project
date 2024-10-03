@@ -26,7 +26,7 @@ torch.set_printoptions(precision=3, edgeitems=14, linewidth=350)
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--raf_path', type=str, default='/content/Final-Year-Project/MMNet-main/4dme', help='Raf-DB dataset path.')
+    parser.add_argument('--raf_path', type=str, default='MMNet-main/4dme', help='Raf-DB dataset path.')
     parser.add_argument('--checkpoint', type=str, default=None,
                         help='Pytorch checkpoint file path')
     parser.add_argument('--pretrained', type=str, default=None,
@@ -45,7 +45,7 @@ def parse_args():
 
 
 class RafDataSet(data.Dataset):
-    def __init__(self, raf_path, phase,num_loso, transform = None, basic_aug = False, transform_norm=None):
+    def __init__(self, raf_path, phase,num_loso, transform = None, basic_aug = False, transform_norm=None, excel_file=None):
         self.phase = phase
         self.transform = transform
         self.raf_path = raf_path
@@ -58,8 +58,10 @@ class RafDataSet(data.Dataset):
         LABEL_AU_COLUMN = 5
         LABEL_ALL_COLUMN = 6
 
-
-        df = pd.read_excel(os.path.join('4dme', 'MMnet_4DME.xlsx'), usecols=[0, 1, 3, 4, 5, 7, 8])
+        if excel_file is not None:
+            df = pd.read_excel(excel_file, usecols=[0, 1, 3, 4, 5, 7, 8])
+        else:
+            df = pd.read_excel(os.path.join('MMNet-main', os.path.join('4dme', 'MMnet_4DME.xlsx')), usecols=[0, 1, 3, 4, 5, 7, 8])
         #print(df)
         df['Subject'] = df['Subject'].apply(str)
 
@@ -182,8 +184,8 @@ class RafDataSet(data.Dataset):
         off2 = 'Frame_' + off2.zfill(9) + '.jpg'
         off3 = 'Frame_' + off3.zfill(9) + '.jpg'
 
-
         path_on0 = os.path.join(self.raf_path, 'micro_short_gray_video/micro short gray video/micro short gray video', sub, f, on0)
+
         #print(f"path: {path_on0}")
         path_on0 = path_on0.replace('\\', '/')
         #print(f"path: {path_on0}")   # CHANGED
@@ -210,6 +212,8 @@ class RafDataSet(data.Dataset):
         
         path_off3 = os.path.join(self.raf_path, 'micro_short_gray_video/micro short gray video/micro short gray video', sub, f, off3)
         path_off3 = path_on0.replace('\\', '/')
+
+
         image_on0 = cv2.imread(path_on0)
         image_on1= cv2.imread(path_on1)
         image_on2 = cv2.imread(path_on2)
@@ -351,7 +355,7 @@ class MMNet(nn.Module):
 
 
 
-def run_training():
+def run_training(excel_name = None):
 
     args = parse_args()
     imagenet_pretrained = True
@@ -426,10 +430,10 @@ def run_training():
         all_data = []
         print(subj)
         train_dataset = RafDataSet(args.raf_path, phase='train', num_loso=subj, transform=data_transforms,
-                                   basic_aug=True, transform_norm=data_transforms_norm)
+                                   basic_aug=True, transform_norm=data_transforms_norm, excel_file=excel_name)
         if len(train_dataset) == 0:
           raise ValueError("The training dataset is empty. Please check the dataset paths and filtering logic.")
-        val_dataset = RafDataSet(args.raf_path, phase='test', num_loso=subj, transform=data_transforms_val)
+        val_dataset = RafDataSet(args.raf_path, phase='test', num_loso=subj, transform=data_transforms_val, excel_file=excel_name)
         train_loader = torch.utils.data.DataLoader(train_dataset,
                                                    batch_size=24,
                                                    num_workers=args.workers,
@@ -454,7 +458,8 @@ def run_training():
 
         params_all = net_all.parameters()
         
-        model_save_path = f'model_weights_4dme_subject_{subj}.pth'
+        # model_save_path = f'model_weights_4dme_subject_{subj}.pth'
+        model_save_path = 'model_weights_subject_1.pth'
         # model_save_path = 'train_all.pth'   
 
         # Check if the model weights file exists
@@ -483,20 +488,20 @@ def run_training():
 
         net_all = net_all.cuda()
 
-        # # Define the directory where you want to save the model
-        # weight_dir = '/content/Final-Year-Project/MMNet-main/4dme/4dme paths'
+        # Define the directory where you want to save the model
+        weight_dir = '/content/Final-Year-Project/MMNet-main/4dme/4dme paths'
 
-        # # Ensure the directory exists
-        # if not os.path.exists(weight_dir):
-        #     os.makedirs(weight_dir)
+        # Ensure the directory exists
+        if not os.path.exists(weight_dir):
+            os.makedirs(weight_dir)
 
-        # # Define the full path for saving the model
-        # weight_path = os.path.join(weight_dir, 'model_weights.pth')
+        # Define the full path for saving the model
+        weight_path = os.path.join(weight_dir, 'model_weights.pth')
 
-        # # Now you can save the model without the error
-        # torch.save(net_all.state_dict(), weight_path)
+        # Now you can save the model without the error
+        torch.save(net_all.state_dict(), weight_path)
 
-        for i in range(1, 20): # changed number of epochs to 20 instead of 100
+        for i in range(1, 2): # changed number of epochs to 20 instead of 100
             running_loss = 0.0
             correct_sum = 0
             running_loss_MASK = 0.0
@@ -601,7 +606,7 @@ def run_training():
                     sample_cnt += ALL.size(0)
                     # Loop through each prediction and label, and store them in the list
                     for j in range(predicts.size(0)):
-                      all_data.append([f[j], predicts[j].item(), label_all[j].item()])
+                        all_data.append([f[j], predicts[j].item(), label_all[j].item()])
 
                     for cls in range(3):
                         for element in predicts:
@@ -673,6 +678,8 @@ def run_training():
             print(f"File saved successfully: {file_name}")
         else:
             print("Failed to save the file.")
+        
+    return num_sum, pos_label_ALL, pos_pred_ALL, TP_ALL
 
         
 import os
