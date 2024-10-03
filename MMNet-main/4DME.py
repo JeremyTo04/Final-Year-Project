@@ -453,6 +453,20 @@ def run_training():
         net_all = MMNet()
 
         params_all = net_all.parameters()
+        
+        model_save_path = f'model_weights_4dme_subject_{subj}.pth'
+        # model_save_path = 'train_all.pth'   
+
+        # Check if the model weights file exists
+        if os.path.exists(model_save_path):
+            # Load the saved weights
+            net_all.load_state_dict(torch.load(model_save_path))
+            net_all.eval()  # Set the model to evaluation mode
+            print(f'Loaded saved model weights for 4dme subject {subj} from {model_save_path}')
+        else:
+            # Proceed with training since weights are not available
+            print(f'No saved model weights found for 4dme subject {subj}. Starting training.')
+
 
         if args.optimizer == 'adam':
             optimizer_all = torch.optim.AdamW(params_all, lr=0.0008, weight_decay=0.7)
@@ -469,18 +483,18 @@ def run_training():
 
         net_all = net_all.cuda()
 
-        # Define the directory where you want to save the model
-        weight_dir = '/content/Final-Year-Project/MMNet-main/4dme'
+        # # Define the directory where you want to save the model
+        # weight_dir = '/content/Final-Year-Project/MMNet-main/4dme/4dme paths'
 
-        # Ensure the directory exists
-        if not os.path.exists(weight_dir):
-            os.makedirs(weight_dir)
+        # # Ensure the directory exists
+        # if not os.path.exists(weight_dir):
+        #     os.makedirs(weight_dir)
 
-        # Define the full path for saving the model
-        weight_path = os.path.join(weight_dir, 'model_weights.pth')
+        # # Define the full path for saving the model
+        # weight_path = os.path.join(weight_dir, 'model_weights.pth')
 
-        # Now you can save the model without the error
-        torch.save(net_all.state_dict(), weight_path)
+        # # Now you can save the model without the error
+        # torch.save(net_all.state_dict(), weight_path)
 
         for i in range(1, 20): # changed number of epochs to 20 instead of 100
             running_loss = 0.0
