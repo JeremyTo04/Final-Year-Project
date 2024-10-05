@@ -468,18 +468,18 @@ def run_training():
 
         params_all = net_all.parameters()
         
-        model_save_path = f'model_weights_4dme_subject_{subj}.pth'
-        # model_save_path = 'train_all.pth'   
+        # model_save_path = f'model_weights_4dme_subject_{subj}.pth'
+        # # model_save_path = 'train_all.pth'   
 
-        # Check if the model weights file exists
-        if os.path.exists(model_save_path):
-            # Load the saved weights
-            net_all.load_state_dict(torch.load(model_save_path))
-            net_all.eval()  # Set the model to evaluation mode
-            print(f'Loaded saved model weights for 4dme subject {subj} from {model_save_path}')
-        else:
-            # Proceed with training since weights are not available
-            print(f'No saved model weights found for 4dme subject {subj}. Starting training.')
+        # # Check if the model weights file exists
+        # if os.path.exists(model_save_path):
+        #     # Load the saved weights
+        #     net_all.load_state_dict(torch.load(model_save_path))
+        #     net_all.eval()  # Set the model to evaluation mode
+        #     print(f'Loaded saved model weights for 4dme subject {subj} from {model_save_path}')
+        # else:
+        #     # Proceed with training since weights are not available
+        #     print(f'No saved model weights found for 4dme subject {subj}. Starting training.')
 
 
         if args.optimizer == 'adam':
