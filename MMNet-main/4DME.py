@@ -26,8 +26,7 @@ torch.set_printoptions(precision=3, edgeitems=14, linewidth=350)
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    # parser.add_argument('--raf_path', type=str, default='MMNet-main/4dme', help='Raf-DB dataset path.')
-    parser.add_argument('--raf_path', type=str, default='/content/Final-Year-Project/MMNet-main/4dme', help='Raf-DB dataset path.')
+    parser.add_argument('--raf_path', type=str, default='MMNet-main/4dme', help='Raf-DB dataset path.')
     parser.add_argument('--checkpoint', type=str, default=None,
                         help='Pytorch checkpoint file path')
     parser.add_argument('--pretrained', type=str, default=None,
