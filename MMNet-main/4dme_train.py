@@ -494,6 +494,9 @@ def run_training():
 
         # # Now you can save the model without the error
         # torch.save(net_all.state_dict(), weight_path)
+        
+        torch.save(net_all.state_dict(), model_save_path)
+        print(f'Model weights saved for subject {subj} at {model_save_path}')
 
         for i in range(1, 10): # changed number of epochs to 10 instead of 100
             running_loss = 0.0
