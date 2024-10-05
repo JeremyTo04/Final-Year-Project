@@ -411,9 +411,10 @@ def run_training():
 
     criterion = torch.nn.CrossEntropyLoss()
     #leave one subject out protocal #, ('S58_2'), , ('S43')]
-    LOSO = [ 'S59', 'S60', 'S61', 'S63', 'S64', 'S65', 'S08', 'S09', 'S10', 'S12', 'S13_1', 'S13_2','S14', 'S16','S17','S18', 'S20', 'S21', 'S22', 'S24', 'S25',
-    'S27', 'S30_1', 'S30_2', 'S31', 'S33', 'S34','S36', 'S37', 'S38', 'S41', 'S42','S45', 'S46', 'S49', 'S50_1', 'S51','S52_2', 'S53', 'S55', 'S56',
-    'S57', 'S58_1']  
+    # LOSO = [ 'S59', 'S60', 'S61', 'S63', 'S64', 'S65', 'S08', 'S09', 'S10', 'S12', 'S13_1', 'S13_2','S14', 'S16','S17','S18', 'S20', 'S21', 'S22', 'S24', 'S25',
+    # 'S27', 'S30_1', 'S30_2', 'S31', 'S33', 'S34','S36', 'S37', 'S38', 'S41', 'S42','S45', 'S46', 'S49', 'S50_1', 'S51','S52_2', 'S53', 'S55', 'S56',
+    # 'S57', 'S58_1']  
+    LOSO = [ 'S59', 'S60'] 
 
     val_now = 0
     num_sum = 0
@@ -683,7 +684,7 @@ def run_training():
         # else:
         #     print("Failed to save the file.")
         
-                # After processing all subjects, save the model weights
+    # After processing all subjects, save the model weights
     torch.save(net_all.state_dict(), model_save_path)
     print(f'Model weights saved at {model_save_path}')
     
