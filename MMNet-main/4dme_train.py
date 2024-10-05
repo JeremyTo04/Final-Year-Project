@@ -421,6 +421,20 @@ def run_training():
     pos_label_ALL = torch.zeros(3)
     TP_ALL = torch.zeros(3)
     
+    ##model initialization
+    net_all = MMNet()
+    model_save_path = f'model_weights.pth' 
+
+    # Check if the model weights file exists
+    if os.path.exists(model_save_path):
+            # Load the saved weights
+            net_all.load_state_dict(torch.load(model_save_path))
+            net_all.eval()  # Set the model to evaluation mode
+            print(f'Loaded saved model weights from {model_save_path}')
+    else:
+            # Proceed with training since weights are not available
+            print(f'No saved model weights found. Starting training.')
+    
     for subj in LOSO:
         all_data = []
         print(subj)
@@ -494,9 +508,7 @@ def run_training():
 
         # # Now you can save the model without the error
         # torch.save(net_all.state_dict(), weight_path)
-        
-        torch.save(net_all.state_dict(), model_save_path)
-        print(f'Model weights saved for subject {subj} at {model_save_path}')
+    
 
         for i in range(1, 10): # changed number of epochs to 10 instead of 100
             running_loss = 0.0
@@ -655,11 +667,6 @@ def run_training():
         print("[ALL_corr]: %d [ALL_val]: %d" % (num_sum, val_now))
         print("[F1_now]: %.4f [F1_ALL]: %.4f" % (max_f1, F1_ALL))
 
-        # df = pd.DataFrame(all_data, columns=['filename', 'Predicted Label', 'Actual Label'])
-        # # Save the DataFrame to an Excel file
-        # file_name = f'predictions_and_labels_{subj}.xlsx'
-        # print(f"saving predictions for {subj} to {file_name}")
-        # df.to_excel(file_name, index=False)
         
         # df = pd.DataFrame(all_data, columns=['filename', 'Predicted Label', 'Actual Label'])
         # # Save the DataFrame to an Excel file
@@ -675,6 +682,12 @@ def run_training():
         #     print(f"File saved successfully: {file_name}")
         # else:
         #     print("Failed to save the file.")
+        
+                # After processing all subjects, save the model weights
+    torch.save(net_all.state_dict(), model_save_path)
+    print(f'Model weights saved at {model_save_path}')
+    
+    return num_sum, pos_label_ALL, pos_pred_ALL, TP_ALL
 
         
 import os
