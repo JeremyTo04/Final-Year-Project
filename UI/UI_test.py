@@ -31,6 +31,9 @@ def detect_emotion(onset_image, apex_image):
     print(f"Onset Image Type: {type(onset_image)}")
     print(f"Apex Image Type: {type(apex_image)}")
 
+    if onset_image is None or apex_image is None:
+        return None, "Error: Both onset and apex images must be provided."
+
     # Assuming that Gradio will always provide a PIL image if type is set to 'pil'
     # onset_frame = preprocess_image(onset_image)  # No need for extra checks
     # apex_frame = preprocess_image(apex_image)    # No need for extra checks
@@ -44,7 +47,7 @@ def detect_emotion(onset_image, apex_image):
     else:
         predicted_emotion = 'Others'
 
-    return f"Predicted Emotion: {predicted_emotion}"
+    return f"Predicted Emotion: {predicted_emotion}", None
 
 # Main entry point
 if __name__ == "__main__":
@@ -58,9 +61,12 @@ if __name__ == "__main__":
             gr.Image(),  # Onset image input
             gr.Image()  # Apex image input
         ],
-        outputs=[gr.Text(label="Detected Micro-Expression")],
-        title="Facial Emotion Recognition",
-        description="Upload onset and apex images along with a CSV file to detect the micro-expression."
+        outputs=[
+            gr.Text(label="Detected Micro-Expression"),  # Emotion prediction output
+            gr.Text(label="Error Message")  # Error message output
+        ],
+        title="Micro-expression detection",
+        description="Upload onset and apex images"
     )
 
 
