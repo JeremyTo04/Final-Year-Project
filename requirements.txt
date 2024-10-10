@@ -1,0 +1,6 @@
+torch
+timm
+numpy
+torchvision
+opencv-python
+pandas
