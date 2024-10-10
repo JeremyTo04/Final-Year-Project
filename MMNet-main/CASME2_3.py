@@ -136,16 +136,16 @@ class RafDataSet(data.Dataset):
             offset =self.file_paths_off[idx]
 
             print("onset", onset)
-            # on0 = str(random.randint(int(onset), int(onset + int(0.2* (apex - onset) / 4))))
-            on0 = str(int(onset))
+            on0 = str(random.randint(int(onset), int(onset + int(0.2* (apex - onset) / 4))))
+            # on0 = str(int(onset))
             on1 = str(
                 random.randint(int(onset + int(0.9 * (apex - onset) / 4)), int(onset + int(1.1 * (apex - onset) / 4))))
             on2 = str(
                 random.randint(int(onset + int(1.8 * (apex - onset) / 4)), int(onset + int(2.2 * (apex - onset) / 4))))
             on3 = str(random.randint(int(onset + int(2.7 * (apex - onset) / 4)), onset + int(3.3 * (apex - onset) / 4)))
-            apex0 = str(apex)
-            # apex0 = str(
-            #     random.randint(int(apex - int(0.15* (apex - onset) / 4)), apex + int(0.15 * (offset - apex) / 4)))
+            # apex0 = str(apex)
+            apex0 = str(
+                random.randint(int(apex - int(0.15* (apex - onset) / 4)), apex + int(0.15 * (offset - apex) / 4)))
             off0 = str(
                 random.randint(int(apex + int(0.9 * (offset - apex) / 4)), int(apex + int(1.1 * (offset - apex) / 4))))
             off1 = str(
@@ -362,8 +362,8 @@ class MMNet(nn.Module):
         self.timeembed = nn.Parameter(torch.zeros(1, 4, 111, 111))
 
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
-    # def forward(self, x1, x2, x3, x4, x5, x6, x7, x8, x9, if_shuffle):
-    def forward(self, x1, x5, if_shuffle):
+    def forward(self, x1, x2, x3, x4, x5, x6, x7, x8, x9, if_shuffle):
+    # def forward(self, x1, x5, if_shuffle):
         ##onset:x1 apex:x5
         B = x1.shape[0]
 
@@ -436,15 +436,7 @@ def run_training(evaluate_only=False):
         transforms.Normalize(mean=[0.485, 0.456, 0.406],
                              std=[0.229, 0.224, 0.225])])
 
-
-
     criterion = torch.nn.CrossEntropyLoss()
-
-    # added to store the results in a CSV file (changes made)
-    if not os.path.exists('results_group_3.csv'):
-        results_df = pd.DataFrame(columns=['Subject', 'Correct', 'Total', 'F1', 'F1_ALL', 'Accuracy'])
-    else:
-        results_df = pd.read_csv('results_group_3.csv')
 
     # #leave one subject out protocal  
     # LOSO = ['17']# Testing on few subject (changes made)
@@ -493,8 +485,8 @@ def run_training(evaluate_only=False):
 
         params_all = net_all.parameters()
 
-        model_save_path = f'model_weights_subject_{subj}.pth'
-        # model_save_path = 'train_all.pth'   
+        # model_save_path = f'model_weights_subject_{subj}.pth'
+        model_save_path = 'model_weights\model_weights.pth'
 
         # Check if the model weights file exists
         if os.path.exists(model_save_path):
@@ -652,11 +644,6 @@ def run_training(evaluate_only=False):
                     _, predicts = torch.max(ALL, 1)
                     correct_num = torch.eq(predicts, label_all).sum()
                     correct_sum += correct_num
-
-
-
-
-
 
                 ## lr decay
                 if i <= 50:

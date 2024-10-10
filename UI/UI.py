@@ -51,8 +51,11 @@ def detect_emotion(onset_image, apex_image):
 
 # Main entry point
 if __name__ == "__main__":
-    # Path to your model weights
-    model_path = os.path.join(module_path, "model_weights.pth")
+    # Reletive path to your model weights
+    model_path = os.path.join(module_path, r"model_weights\model_weights.pth")
+
+    #absolute path to your model weights
+    # model_path = r'C:\Users\jeret\OneDrive\Documents\GitHub\Final-Year-Project\MMNet-main\model_weights\model_weights.pth'
     model = load_model(model_path)  # Load the pre-trained model
 
     iface = gr.Interface(
