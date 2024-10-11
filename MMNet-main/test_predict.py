@@ -835,7 +835,7 @@ def run_training():
         net_all = net_all.to(device)
         
         # Training loop
-        for epoch in range(1, 10):  # Reduced to 10 epochs for demonstration
+        for epoch in range(1, 2):  # Reduced to 10 epochs for demonstration
             running_loss = 0.0
             correct_sum = 0
             iter_cnt = 0
